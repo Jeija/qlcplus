@@ -777,6 +777,11 @@ int HID_API_EXPORT hid_get_feature_report(hid_device *dev, unsigned char *data, 
 	return res;
 }
 
+int HID_API_EXPORT hid_get_file_handle(hid_device *dev)
+{
+    return dev->device_handle;
+}
+
 
 void HID_API_EXPORT hid_close(hid_device *dev)
 {

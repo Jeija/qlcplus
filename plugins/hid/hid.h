@@ -97,6 +97,9 @@ public:
     QString inputInfo(quint32 input);
 
     /** @reimp */
+    void emitChangeValue(quint32 port, quint32 channel, uchar value);
+
+    /** @reimp */
     void sendFeedBack(quint32 input, quint32 channel, uchar value, const QString& key)
         { Q_UNUSED(input); Q_UNUSED(channel); Q_UNUSED(value); Q_UNUSED(key); }
 

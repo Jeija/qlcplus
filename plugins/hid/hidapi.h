@@ -312,6 +312,16 @@ extern "C" {
 		*/
 		int HID_API_EXPORT HID_API_CALL hid_get_feature_report(hid_device *device, unsigned char *data, size_t length);
 
+		/** @brief Get the file handle for the hid_device.
+
+			@ingroup API
+			@param device A device handle returned from hid_open().
+
+			@returns
+				This function returns an int which is the file handle of the given hid_device.
+		*/
+		int HID_API_EXPORT HID_API_CALL hid_get_file_handle(hid_device *dev);
+
 		/** @brief Close a HID device.
 
 			@ingroup API
@@ -377,6 +387,7 @@ extern "C" {
 				This function returns a string containing the last error
 				which occurred or NULL if none has occurred.
 		*/
+
 		HID_API_EXPORT const wchar_t* HID_API_CALL hid_error(hid_device *device);
 
 #ifdef __cplusplus

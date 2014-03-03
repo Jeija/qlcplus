@@ -53,7 +53,7 @@ HIDFX5Device::~HIDFX5Device()
     closeInput();
     closeOutput();
     hid_close(m_handle);
-    //qobject_cast<HID*> (parent())->removePollDevice(this); // TODO
+    qobject_cast<HID*> (parent())->removePollDevice(this);
 }
 
 void HIDFX5Device::init()
@@ -70,6 +70,7 @@ void HIDFX5Device::init()
 
     /** Reset channels when opening the interface: */
     m_dmx_cmp.fill(0, 512);
+    m_dmx_in_cmp.fill(0, 512);
     outputDMX(m_dmx_cmp, true);
 }
 
@@ -110,7 +111,37 @@ QString HIDFX5Device::path() const
 
 bool HIDFX5Device::readEvent()
 {
+    unsigned char buffer[35];
+    int size;
+
+    size = hid_read(m_handle, buffer, 33);
+    
+    while(size > 0)
+    {
+        if(size == 33)
+        {
+            unsigned char startOff = buffer[0] * 32;
+            for (int i = 0; i < 16; i++)
+            {
+                unsigned char channel = startOff + i;
+                unsigned char value = buffer[i + 1];
+                if ((unsigned char)m_dmx_in_cmp.at(channel) != value)
+                {
+                    qobject_cast<HID*> (parent())->emitChangeValue(m_line, channel, value);
+                    m_dmx_in_cmp[channel] = value;
+                }
+            }
+        }
+
+        size = hid_read(m_handle, buffer, 33);
+    }
+
     return true;
+}
+
+int HIDFX5Device::handle() const
+{
+    return hid_get_file_handle(m_handle);
 }
 
 /*****************************************************************************
@@ -170,7 +201,7 @@ void HIDFX5Device::outputDMX(const QByteArray &universe, bool forceWrite)
 
 void HIDFX5Device::updateMode()
 {
-    int driver_mode = 0;
+    unsigned char driver_mode = 0;
     if (m_mode & FX5_MODE_OUTPUT)
         driver_mode += 2;
     if (m_mode & FX5_MODE_INPUT)

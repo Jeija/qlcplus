@@ -76,7 +76,7 @@ bool HIDPoller::addDevice(HIDDevice* device)
     }
 
     m_mutex.unlock();
-
+    
     return true;
 }
 

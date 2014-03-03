@@ -22,12 +22,6 @@
 #define HIDFX5DEVICE_H
 
 #include <QObject>
-#include <QFile>
-#include <QHash>
-
-#include <sys/ioctl.h>
-#include <linux/input.h>
-#include <linux/types.h>
 
 #include "hiddevice.h"
 #include "hidapi.h"
@@ -84,6 +78,9 @@ public:
     /** @reimp */
     bool readEvent();
 
+    /** @reimp */
+    int handle() const;
+
     /*********************************************************************
      * Device info
      *********************************************************************/
@@ -120,6 +117,9 @@ private:
 
     /** Last universe data that has been output */
     QByteArray m_dmx_cmp;
+
+    /** Last universe data that has been received */
+    QByteArray m_dmx_in_cmp;
 
     /** mode selection function */
     void updateMode();
